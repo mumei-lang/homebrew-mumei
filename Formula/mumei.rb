@@ -66,9 +66,7 @@ class Mumei < Formula
         export MUMEI_STD_PATH="#{share}/mumei/std"
     EOS
     if (share/"mumei/std-proof-bundle.json").exist?
-      s += <<~EOS
-          export MUMEI_PROOF_BUNDLE="#{share}/mumei/std-proof-bundle.json"
-      EOS
+      s += "  export MUMEI_PROOF_BUNDLE=\"#{share}/mumei/std-proof-bundle.json\"\n"
     end
     s += <<~EOS
 
