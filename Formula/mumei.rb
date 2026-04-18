@@ -35,33 +35,47 @@ class Mumei < Formula
     # SI-5 Phase 3-C: install the std/ proof-certificate bundle when it
     # ships with the release tarball so downstream projects can verify
     # imports against a trusted, versioned certificate set.
-    if File.exist?("std-proof-bundle.json")
+    has_proof_bundle = File.exist?("std-proof-bundle.json")
+    if has_proof_bundle
       (share/"mumei").install "std-proof-bundle.json"
     end
 
-    env_script = <<~EOS
-      export MUMEI_STD_PATH="#{share}/mumei/std"
-      export MUMEI_PROOF_BUNDLE="#{share}/mumei/std-proof-bundle.json"
-    EOS
+    env_script = "export MUMEI_STD_PATH=\"#{share}/mumei/std\"\n"
+    if has_proof_bundle
+      env_script += "export MUMEI_PROOF_BUNDLE=\"#{share}/mumei/std-proof-bundle.json\"\n"
+    end
     (etc/"mumei").mkpath
     (etc/"mumei/env.sh").write env_script
   end
 
   def caveats
-    <<~EOS
+    s = <<~EOS
       The Mumei standard library has been installed to:
         #{share}/mumei/std
 
-      The std/ proof-certificate bundle (SI-5 Phase 3-C) is at:
-        #{share}/mumei/std-proof-bundle.json
+    EOS
+    if (share/"mumei/std-proof-bundle.json").exist?
+      s += <<~EOS
+        The std/ proof-certificate bundle (SI-5 Phase 3-C) is at:
+          #{share}/mumei/std-proof-bundle.json
 
+      EOS
+    end
+    s += <<~EOS
       To use it, add the following to your shell profile:
         export MUMEI_STD_PATH="#{share}/mumei/std"
-        export MUMEI_PROOF_BUNDLE="#{share}/mumei/std-proof-bundle.json"
+    EOS
+    if (share/"mumei/std-proof-bundle.json").exist?
+      s += <<~EOS
+          export MUMEI_PROOF_BUNDLE="#{share}/mumei/std-proof-bundle.json"
+      EOS
+    end
+    s += <<~EOS
 
       Or source the environment file:
         source #{etc}/mumei/env.sh
     EOS
+    s
   end
 
   test do
