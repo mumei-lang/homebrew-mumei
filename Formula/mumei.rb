@@ -2,48 +2,44 @@
 class Mumei < Formula
   desc "Mathematical Proof-Driven Programming Language — formally verified with Z3"
   homepage "https://github.com/mumei-lang/mumei"
+  version "0.6.1"
   license "MIT"
-  version "0.6.0"
+
+  depends_on "llvm@17"
+  depends_on "z3"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.0/mumei-aarch64-apple-darwin.tar.gz"
-      sha256 "3efcffcb3b91390fe66b1472eca9d7c7535728f73b06c26a5a7c562204869aa8"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.1/mumei-aarch64-apple-darwin.tar.gz"
+      sha256 "11f604bbcab236fcf8c2280af5e9e461c3d065c5b5fba0b24c21a9e6f52a45c1"
     else
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.0/mumei-x86_64-apple-darwin.tar.gz"
-      sha256 "1b20bf16937304416c13861d66f370ac047da79a240612b923ac5e9d66f0cc45"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.1/mumei-x86_64-apple-darwin.tar.gz"
+      sha256 "a015df990a083ba1884ea84a25a5f987c63fd003bf66ab86bde1bffa03c13aa2"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.0/mumei-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "f0c1b9b28c15b01afe24c984fa0f6f5bd0bca22f59085832bd962714abb6bdfe"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.1/mumei-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "ca7aafae6e6775e0f265892c0b98f5578a94a52b52f1e9d9e41925630af47b03"
     else
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.0/mumei-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "92a90ea7ae871a960be7aa54102a3e7531ef4717f81adafaf7b3d393443c466f"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.1/mumei-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "b4fbbad34a02d72a8a20d2052d00b85126bed4e56e859a8b8e321a1a4d404b1c"
     end
   end
 
-  depends_on "z3"
-  depends_on "llvm@17"
-
   def install
     bin.install "mumei"
-    (share/"mumei/std").install Dir["std/*"]
+    (pkgshare/"std").install Dir["std/*"]
 
     # SI-5 Phase 3-C: install the std/ proof-certificate bundle when it
     # ships with the release tarball so downstream projects can verify
     # imports against a trusted, versioned certificate set.
     has_proof_bundle = File.exist?("std-proof-bundle.json")
-    if has_proof_bundle
-      (share/"mumei").install "std-proof-bundle.json"
-    end
+    pkgshare.install "std-proof-bundle.json" if has_proof_bundle
 
-    env_script = "export MUMEI_STD_PATH=\"#{share}/mumei/std\"\n"
-    if has_proof_bundle
-      env_script += "export MUMEI_PROOF_BUNDLE=\"#{share}/mumei/std-proof-bundle.json\"\n"
-    end
+    env_script = "export MUMEI_STD_PATH=\"#{pkgshare}/std\"\n"
+    env_script += "export MUMEI_PROOF_BUNDLE=\"#{pkgshare}/std-proof-bundle.json\"\n" if has_proof_bundle
     (etc/"mumei").mkpath
     (etc/"mumei/env.sh").atomic_write env_script
   end
@@ -51,22 +47,22 @@ class Mumei < Formula
   def caveats
     s = <<~EOS
       The Mumei standard library has been installed to:
-        #{share}/mumei/std
+        #{pkgshare}/std
 
     EOS
-    if (share/"mumei/std-proof-bundle.json").exist?
+    if (pkgshare/"std-proof-bundle.json").exist?
       s += <<~EOS
         The std/ proof-certificate bundle (SI-5 Phase 3-C) is at:
-          #{share}/mumei/std-proof-bundle.json
+          #{pkgshare}/std-proof-bundle.json
 
       EOS
     end
     s += <<~EOS
       To use it, add the following to your shell profile:
-        export MUMEI_STD_PATH="#{share}/mumei/std"
+        export MUMEI_STD_PATH="#{pkgshare}/std"
     EOS
-    if (share/"mumei/std-proof-bundle.json").exist?
-      s += "  export MUMEI_PROOF_BUNDLE=\"#{share}/mumei/std-proof-bundle.json\"\n"
+    if (pkgshare/"std-proof-bundle.json").exist?
+      s += "  export MUMEI_PROOF_BUNDLE=\"#{pkgshare}/std-proof-bundle.json\"\n"
     end
     s += <<~EOS
 
