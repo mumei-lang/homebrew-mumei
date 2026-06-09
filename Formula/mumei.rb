@@ -6,7 +6,6 @@ class Mumei < Formula
   license "MIT"
 
   depends_on "llvm@17"
-  depends_on "z3"
 
   on_macos do
     if Hardware::CPU.arm?
