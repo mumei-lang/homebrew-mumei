@@ -45,7 +45,7 @@ class Mumei < Formula
       env_script += "export MUMEI_PROOF_BUNDLE=\"#{share}/mumei/std-proof-bundle.json\"\n"
     end
     (etc/"mumei").mkpath
-    (etc/"mumei/env.sh").write env_script
+    (etc/"mumei/env.sh").atomic_write env_script
   end
 
   def caveats
