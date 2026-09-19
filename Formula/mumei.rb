@@ -78,5 +78,17 @@ class Mumei < Formula
 
   test do
     assert_match version.to_s, shell_output("#{bin}/mumei --version")
+
+    # Smoke-test real verification, not just `--version`: this exercises the
+    # installed binary's Z3 linkage and the shipped std/ tree, catching
+    # failures a version probe cannot.
+    ENV["MUMEI_STD_PATH"] = "#{share}/mumei/std"
+    (testpath/"smoke.mm").write <<~EOS
+      atom smoke(a: i64) -> i64
+      requires: true;
+      ensures: result == a;
+      body: a;
+    EOS
+    system bin/"mumei", "verify", testpath/"smoke.mm"
   end
 end
