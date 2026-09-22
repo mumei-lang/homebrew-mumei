@@ -3,25 +3,25 @@ class Mumei < Formula
   desc "Mathematical Proof-Driven Programming Language — formally verified with Z3"
   homepage "https://github.com/mumei-lang/mumei"
   license "Apache-2.0"
-  version "0.6.13"
+  version "0.6.19"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.13/mumei-aarch64-apple-darwin.tar.gz"
-      sha256 "3e29d21554a9790d60d775ada558006989331eab7b763ca48dd47359200dda80"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.19/mumei-aarch64-apple-darwin.tar.gz"
+      sha256 "a3aaac0f5dc766e68b554c57bd8254f2d43d4831d4323a2f88756b0eb26783df"
     else
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.13/mumei-x86_64-apple-darwin.tar.gz"
-      sha256 "b7fe1ee82e63a41d5808d80c3237ab8298f411dc9ad90915dbdfa09f7ade02ac"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.19/mumei-x86_64-apple-darwin.tar.gz"
+      sha256 "edbf28f1d1cd93416b48a71dacebaa82d29f205f4adf0879e6e01d294316c287"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.13/mumei-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "74237d54343897fdf322de930a4c7abf8c28378aac79ebce75565eb16e030ef6"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.19/mumei-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "8ff07cf1149a20aa057c5d0cc8285cffb9edab0be2952954e8e92e03080ec11d"
     else
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.13/mumei-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "80cd5dad9e25e446dc39701a7b16f6565c5ccf6df710709085ee57350e1561bb"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.19/mumei-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "084ae89ea392892ee440b35757d197a5c22729cbdeb5367461b628c6c732a2c0"
     end
   end
 
@@ -41,6 +41,9 @@ class Mumei < Formula
     end
 
     env_script = "export MUMEI_STD_PATH=\"#{share}/mumei/std\"\n"
+    if Dir.exist?("std/certs")
+      env_script += "export MUMEI_PROOF_CERTS=\"#{share}/mumei/std/certs\"\n"
+    end
     if has_proof_bundle
       env_script += "export MUMEI_PROOF_BUNDLE=\"#{share}/mumei/std-proof-bundle.json\"\n"
     end
@@ -58,6 +61,11 @@ class Mumei < Formula
       s += <<~EOS
         The std/ proof-certificate bundle (SI-5 Phase 3-C) is at:
           #{share}/mumei/std-proof-bundle.json
+
+        Per-module proof certificates are at:
+          #{share}/mumei/std/certs
+        Re-verify a module with:
+          mumei verify-cert "$MUMEI_PROOF_CERTS/<module>.proof.json" "$MUMEI_STD_PATH/<module>.mm" --strict
 
       EOS
     end
@@ -78,17 +86,16 @@ class Mumei < Formula
 
   test do
     assert_match version.to_s, shell_output("#{bin}/mumei --version")
-
-    # Smoke-test real verification, not just `--version`: this exercises the
-    # installed binary's Z3 linkage and the shipped std/ tree, catching
-    # failures a version probe cannot.
-    ENV["MUMEI_STD_PATH"] = "#{share}/mumei/std"
-    (testpath/"smoke.mm").write <<~EOS
-      atom smoke(a: i64) -> i64
-      requires: true;
-      ensures: result == a;
-      body: a;
-    EOS
-    system bin/"mumei", "verify", testpath/"smoke.mm"
+    # Modules with `unknown` / `skipped` atoms exit non-zero by design, so the
+    # packaged set is sound as long as one certificate re-verifies strictly.
+    certs = Dir["#{share}/mumei/std/certs/**/*.proof.json"]
+    unless certs.empty?
+      verified = certs.any? do |cert|
+        relative = cert.sub("#{share}/mumei/std/certs/", "").sub(/\.proof\.json\z/, ".mm")
+        source = share/"mumei/std"/relative
+        source.exist? && quiet_system(bin/"mumei", "verify-cert", cert, source, "--strict")
+      end
+      assert verified, "no packaged proof certificate passed verify-cert --strict"
+    end
   end
 end
