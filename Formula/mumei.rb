@@ -3,25 +3,25 @@ class Mumei < Formula
   desc "Mathematical Proof-Driven Programming Language — formally verified with Z3"
   homepage "https://github.com/mumei-lang/mumei"
   license "Apache-2.0"
-  version "0.6.20"
+  version "0.6.23"
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.20/mumei-aarch64-apple-darwin.tar.gz"
-      sha256 "1d2729255ec15e640faf8cfb551efe295d741e87e766fc3fac9bfe8660415d74"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.23/mumei-aarch64-apple-darwin.tar.gz"
+      sha256 "66ede8c77312de89695bb58791f4937bb6454cdbcb62400122d300fbed0de3f2"
     else
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.20/mumei-x86_64-apple-darwin.tar.gz"
-      sha256 "85c7b3f67bda50f556894c431b3a2421dd03040eba2091ae0b45ab9686a32b7e"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.23/mumei-x86_64-apple-darwin.tar.gz"
+      sha256 "a7eb9934254a64d1cc8208e9ad06bd26a49b9a870ce2d5ad6f23f385596b63ce"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.20/mumei-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "31994e70e4d2c18a096f4f7045d4076e87833f1c69768bb8456e3aa6d4905d14"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.23/mumei-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "8155644669cacb5f1a783893ac9d740d104763382df72a63249f6a53b47cef0b"
     else
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.20/mumei-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "f48957e35df72d3f41da4f94836c337db8a6fa0ac1fadb62d507a9810407fa95"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.23/mumei-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "22bb816c06b3a31aa49a90fe00738cef70425087429251dbc21c2365d5f7bbf4"
     end
   end
 
