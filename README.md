@@ -43,7 +43,7 @@ The repository validation path is:
 
 ```sh
 brew ruby -- -c Formula/mumei.rb
-if brew tap --list | grep -qx 'mumei-lang/mumei'; then
+if brew tap | grep -qx 'mumei-lang/mumei'; then
   HOMEBREW_NO_AUTO_UPDATE=1 brew untap mumei-lang/mumei
 fi
 HOMEBREW_NO_AUTO_UPDATE=1 brew tap mumei-lang/mumei "$PWD"
