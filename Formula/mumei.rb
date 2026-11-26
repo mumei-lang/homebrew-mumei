@@ -4,6 +4,9 @@ class Mumei < Formula
   homepage "https://github.com/mumei-lang/mumei"
   license "Apache-2.0"
 
+  depends_on "llvm@17"
+  depends_on "z3"
+
   on_macos do
     if Hardware::CPU.arm?
       url "https://github.com/mumei-lang/mumei/releases/download/v0.6.23/mumei-aarch64-apple-darwin.tar.gz"
@@ -23,9 +26,6 @@ class Mumei < Formula
       sha256 "22bb816c06b3a31aa49a90fe00738cef70425087429251dbc21c2365d5f7bbf4"
     end
   end
-
-  depends_on "llvm@17"
-  depends_on "z3"
 
   def install
     bin.install "mumei"
