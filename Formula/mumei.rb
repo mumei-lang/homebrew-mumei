@@ -9,21 +9,21 @@ class Mumei < Formula
 
   on_macos do
     if Hardware::CPU.arm?
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.23/mumei-aarch64-apple-darwin.tar.gz"
-      sha256 "66ede8c77312de89695bb58791f4937bb6454cdbcb62400122d300fbed0de3f2"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.7.1/mumei-aarch64-apple-darwin.tar.gz"
+      sha256 "6969ace95b2dc083906c6c6297189ec00ca06013bd418b736c62eeab5efe5df1"
     else
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.23/mumei-x86_64-apple-darwin.tar.gz"
-      sha256 "a7eb9934254a64d1cc8208e9ad06bd26a49b9a870ce2d5ad6f23f385596b63ce"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.7.1/mumei-x86_64-apple-darwin.tar.gz"
+      sha256 "6591377e4aa426319c4551ad8bac1750d0cdc45d9daf592af809c8babc3890a0"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.23/mumei-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "8155644669cacb5f1a783893ac9d740d104763382df72a63249f6a53b47cef0b"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.7.1/mumei-aarch64-unknown-linux-gnu.tar.gz"
+      sha256 "25adf7bdba9368df05a77c07fa2abbdaba03b9b159cdbd463da420fa2d01ab15"
     else
-      url "https://github.com/mumei-lang/mumei/releases/download/v0.6.23/mumei-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "22bb816c06b3a31aa49a90fe00738cef70425087429251dbc21c2365d5f7bbf4"
+      url "https://github.com/mumei-lang/mumei/releases/download/v0.7.1/mumei-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "a890c2d728ca7f5d5214e270c05b4e18837ec9c067fcecddbdb94338a83df8fa"
     end
   end
 
